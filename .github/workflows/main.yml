@@ -78,3 +78,17 @@ jobs:
             sudo docker rm -f python-app || true
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/python-app
             sudo docker run -d --name python-app -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/python-app
+
+
+            #✅ Summary:
+#This workflow automates:
+
+#1. Building a Docker image from your Python app (app.py).
+
+#2. Pushing it to Docker Hub.
+
+#3. Connecting to your EC2 instance.
+
+#4. Running the new container with your updated app.
+
+
