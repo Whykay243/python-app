@@ -12,6 +12,8 @@ jobs:
   build-and-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_REPO: yajibola0011/python-application:latest
 
     steps:
       - name: Checkout code
@@ -30,6 +32,7 @@ jobs:
         run: |
           docker build -t $DOCKERHUB_REPO .
           docker push $DOCKERHUB_REPO
+
 
   deploy-to-ec2:
     name: SSH Deploy to EC2
