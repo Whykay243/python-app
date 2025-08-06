@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and Push Image to Docker Hub
         run: |
-          docker buildx build -t $DOCKERHUB_REPO ./python-application-CI-CD --push
+          docker buildx build -t $DOCKERHUB_REPO . --push
 
   deploy-to-ec2:
     name: SSH Deploy to EC2
