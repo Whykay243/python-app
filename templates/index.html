@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cloud DevOps Engineer Training - January Batch</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      color: white;
+      background: url('https://media.licdn.com/dms/image/v2/C4D12AQE39vlgcO7LJw/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1634011708493?e=2147483647&v=beta&t=bzJfgxQ4ierAN0F2yOwNhQ2Njm1AQ4-w8gN7IML5fxk') no-repeat center center fixed;
+      background-size: cover;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 255, 0.8);
+      font-weight: bold;
+      font-size: 2em;
+      letter-spacing: 1.5px;
+      user-select: none;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 50px 20px;
+      max-width: 1200px;
+      margin: auto;
+      gap: 30px;
+    }
+    .content {
+      flex: 1 1 600px;
+      background: rgba(0, 0, 139, 0.85);
+      border-radius: 10px;
+      padding: 30px;
+      box-sizing: border-box;
+      min-width: 280px;
+    }
+    .content h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    .content ul {
+      padding-left: 20px;
+    }
+    .aws-services {
+      margin-top: 25px;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid gold;
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(0, 0, 200, 0.75);
+    }
+    .form-container {
+      flex: 0 1 320px;
+      background: rgba(0, 0, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-sizing: border-box;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .form-container input,
+    .form-container button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+    }
+    .form-container button {
+      background-color: gold;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .form-container button:hover {
+      background-color: darkorange;
+    }
+    .names-container,
+    .tuition-info {
+      background: rgba(0, 0, 255, 0.85);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      box-sizing: border-box;
+      min-width: 280px;
+    }
+    .names-container ul,
+    .tuition-info p {
+      margin: 8px 0;
+      padding-left: 20px;
+    }
+    a {
+      color: gold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .shout-out {
+      font-size: 1.8em;
+      font-weight: bold;
+      white-space: nowrap;
+      color: yellow;
+      animation: move-text 15s linear infinite;
+      background: rgba(0,0,0,0.4);
+      padding: 10px 20px;
+      border-radius: 10px;
+      max-width: 100%;
+      overflow: hidden;
+      user-select: none;
+      margin: 30px auto 50px;
+      max-width: 900px;
+      box-sizing: border-box;
+    }
+    @keyframes move-text {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 255, 0.7);
+      font-size: 0.9em;
+      user-select: none;
+    }
+    /* Scrollbar styling for AWS services */
+    .aws-services::-webkit-scrollbar {
+      width: 8px;
+    }
+    .aws-services::-webkit-scrollbar-thumb {
+      background-color: gold;
+      border-radius: 10px;
+    }
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        padding: 30px 10px;
+      }
+      .content, .form-container {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>January Cloud DevOps Batch</header>
+
+  <div class="container">
+
+    <div class="content">
+      <h2>Online Cloud Certifications: Graduate Career-Ready</h2>
+      <p>Earn more than just a degree: Get skilled, Get certified, Get hired.</p>
+      <ul>
+        <li>Stackable IT programs designed for working adults</li>
+        <li>Dedicated support for industry-recognized certifications</li>
+        <li><strong>No certification exam fees and unlimited attempts</strong></li>
+        <li>Personalized career coaching</li>
+        <li>Fully accredited college with award-winning IT programs</li>
+      </ul>
+
+      <div class="aws-services">
+        <h3>AWS Services Covered in Training</h3>
+        <ul>
+          <li><strong>EC2:</strong> Virtual servers in the cloud for scalable computing.</li>
+          <li><strong>S3:</strong> Secure, scalable storage for all types of data.</li>
+          <li><strong>Lambda:</strong> Serverless computing to run code without managing servers.</li>
+          <li><strong>VPC:</strong> Isolated cloud resources for network security.</li>
+          <li><strong>IAM:</strong> Secure access control and identity management.</li>
+          <li><strong>CloudFormation:</strong> Infrastructure as Code for automated deployments.</li>
+          <li><strong>RDS:</strong> Managed relational databases in the cloud.</li>
+          <li><strong>CloudWatch:</strong> Monitoring and observability for AWS resources.</li>
+          <li><strong>Elastic Load Balancer (ELB):</strong> Distribute traffic across multiple servers.</li>
+          <li><strong>Kubernetes (EKS):</strong> Managed Kubernetes for container orchestration.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="form-container">
+        <h3>View Program & Tuition Guide</h3>
+        <input type="text" placeholder="First Name *" required>
+        <input type="text" placeholder="Last Name *" required>
+        <input type="email" placeholder="Email *" required>
+        <input type="text" placeholder="Phone Number *" required>
+        <input type="text" placeholder="Military Status *" required>
+        <input type="text" placeholder="Employment Status *" required>
+        <button>View Details</button>
+      </div>
+
+      <div class="names-container">
+        <h3>Students</h3>
+        <ul>
+          <li>Mr Damilola</li>
+          <li>Mr Adeola</li>
+          <li>Mr Pepe</li>
+          <li>Mr Teewhy</li>
+          <li>Mr Dare Iyanuoluwa Solomon (AKA Mr Weapon)</li>
+        </ul>
+        <h3>Instructors</h3>
+        <ul>
+          <li>Mr Austin</li>
+          <li>Mr Ciryl</li>
+        </ul>
+      </div>
+
+      <div class="tuition-info">
+        <h3>Tuition Fee & Contact Information</h3>
+        <p><strong>Tuition Fee:</strong> $2000 for the full course.</p>
+        <p><strong>Contact Email:</strong> <a href="mailto:adeolasulaiman52@gmail.com">adeolasulaiman52@gmail.com</a></p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="shout-out" aria-label="Birthday shout out message" role="marquee" tabindex="0">
+    🎉🎂 Happy Birthday to my amazing friend! 🎂🎉 March 30th is your day! 🎈🎉
+  </div>
+
+  <footer>
+    &copy; 2025 January Cloud DevOps Batch. All rights reserved.
+  </footer>
+
+</body>
+</html>
