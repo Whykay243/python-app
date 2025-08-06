@@ -6,13 +6,11 @@ on:
 
 env:
   IMAGE_NAME: python-application
+  DOCKERHUB_REPO: yajibola0011/python-application:latest
 
 jobs:
   build-and-push:
-    name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    env:
-      DOCKERHUB_REPO: yajibola0011/python-application:latest
 
     steps:
       - name: Checkout code
@@ -34,61 +32,44 @@ jobs:
         run: docker push $DOCKERHUB_REPO
 
   deploy-to-ec2:
-    name: SSH Deploy to EC2
-    runs-on: ubuntu-latest
     needs: build-and-push
-    env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    runs-on: ubuntu-latest
 
     steps:
-      - name: SSH and Deploy Python App to EC2
+      - name: SSH and deploy Python app to EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          env:
-            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-            DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           script: |
-            echo "Checking if Docker is installed..."
+            echo "Checking Docker installation..."
             if ! command -v docker &> /dev/null; then
               echo "Docker not found. Installing Docker..."
-              for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
-                sudo apt-get remove -y $pkg
-              done
-
               sudo apt-get update
-              sudo apt-get install -y ca-certificates curl
-              sudo install -m 0755 -d /etc/apt/keyrings
-              sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-              sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-              echo "Adding Docker's official apt repo..."
+              sudo apt-get remove -y docker docker-engine docker.io containerd runc || true
+              sudo apt-get install -y ca-certificates curl gnupg lsb-release
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
               echo \
-                "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-                $(. /etc/os-release && echo \"${UBUNTU_CODENAME:-$VERSION_CODENAME}\") stable" | \
-                sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
+                "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+                $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
               sudo apt-get update
-              sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-              echo "Adding ubuntu user to docker group..."
+              sudo apt-get install -y docker-ce docker-ce-cli containerd.io
               sudo usermod -aG docker ubuntu
               sudo systemctl restart docker
+              echo "Docker installed."
             else
               echo "Docker is already installed."
             fi
 
-            echo "Logging in to Docker Hub on EC2..."
-            echo "$DOCKERHUB_TOKEN" | sudo docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+            echo "Logging in to Docker Hub..."
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | sudo docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            echo "Stopping and removing existing container if any..."
+            echo "Removing old container if exists..."
             sudo docker rm -f python-application || true
 
-            echo "Pulling latest image from Docker Hub..."
-            sudo docker pull $DOCKERHUB_USERNAME/python-application:latest
+            echo "Pulling latest image..."
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/python-application:latest
 
-            echo "Starting container on port 80..."
-            sudo docker run -d --name python-application -p 80:80 $DOCKERHUB_USERNAME/python-application:latest
+            echo "Running container on port 80..."
+            sudo docker run -d --name python-application -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/python-application:latest
