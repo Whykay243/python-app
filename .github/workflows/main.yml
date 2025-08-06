@@ -30,7 +30,7 @@ jobs:
 
       - name: Build and Push Image to Docker Hub
         run: |
-          docker build -t $DOCKERHUB_REPO
+          docker build -t $DOCKERHUB_REPO ./python-application-CI-CD
           docker push $DOCKERHUB_REPO
 
 
