@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
+      - name: Set up Docker Buildx (for multi-platform builds, optional)
         uses: docker/setup-buildx-action@v2
 
       - name: Log in to Docker Hub
@@ -27,9 +27,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Image to Docker Hub
+      - name: Build Docker image
         run: |
           docker build -t $DOCKERHUB_REPO .
+
+      - name: Push Docker image to Docker Hub
+        run: |
           docker push $DOCKERHUB_REPO
 
   deploy-to-ec2:
@@ -38,7 +41,7 @@ jobs:
     needs: build-and-push
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
     steps:
       - name: SSH and Deploy Python App to EC2
@@ -49,7 +52,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           env:
             DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-            DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+            DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           script: |
             echo "Checking if Docker is installed..."
             if ! command -v docker &> /dev/null; then
@@ -58,14 +61,13 @@ jobs:
                 sudo apt-get remove -y $pkg
               done
 
-              echo "Installing Docker via Docker's official method..."
               sudo apt-get update
               sudo apt-get install -y ca-certificates curl
               sudo install -m 0755 -d /etc/apt/keyrings
               sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
               sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-              echo "Adding Docker's apt repo..."
+              echo "Adding Docker's official apt repo..."
               echo \
                 "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
                 $(. /etc/os-release && echo \"${UBUNTU_CODENAME:-$VERSION_CODENAME}\") stable" | \
@@ -74,21 +76,21 @@ jobs:
               sudo apt-get update
               sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-              echo "Adding 'ubuntu' user to docker group..."
+              echo "Adding ubuntu user to docker group..."
               sudo usermod -aG docker ubuntu
               sudo systemctl restart docker
             else
-              echo "Docker is already installed. Skipping installation."
+              echo "Docker is already installed."
             fi
 
-            echo "Logging into Docker Hub..."
-            echo "$DOCKERHUB_PASSWORD" | sudo docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+            echo "Logging in to Docker Hub on EC2..."
+            echo "$DOCKERHUB_TOKEN" | sudo docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 
-            echo "Removing old container if exists..."
+            echo "Stopping and removing existing container if any..."
             sudo docker rm -f python-application || true
 
             echo "Pulling latest image from Docker Hub..."
             sudo docker pull $DOCKERHUB_USERNAME/python-application:latest
 
-            echo "Running container on port 80..."
+            echo "Starting container on port 80..."
             sudo docker run -d --name python-application -p 80:80 $DOCKERHUB_USERNAME/python-application:latest
